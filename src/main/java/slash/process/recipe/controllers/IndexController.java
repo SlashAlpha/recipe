@@ -1,5 +1,6 @@
 package slash.process.recipe.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import slash.process.recipe.services.RecipeService;
 
 import java.util.Optional;
 
+@Slf4j
 @Controller
 public class IndexController {
 
@@ -31,6 +33,7 @@ public class IndexController {
         Optional<UnitOfMeasure> unitOfMeasureOptional = unitOfMeasureRepository.findByDescription("Ounce");
 
         System.out.println("Category id is : " + categoryOptional.get().getId());
+        log.debug("I'm in Controller mapping index page");
         System.out.println("unit of measure id is : " + unitOfMeasureOptional.get().getId());
         model.addAttribute("recipes", recipeService.getRecipes());
         System.out.println("Some message to say...");

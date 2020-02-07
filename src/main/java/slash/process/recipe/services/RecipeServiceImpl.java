@@ -1,5 +1,6 @@
 package slash.process.recipe.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import slash.process.recipe.domain.Recipe;
 import slash.process.recipe.repositories.RecipeRepository;
@@ -7,6 +8,7 @@ import slash.process.recipe.repositories.RecipeRepository;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Service
 public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
@@ -17,6 +19,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Set<Recipe> getRecipes() {
+        log.debug("I'm in the service");
 
         HashSet<Recipe> recipeSet = new HashSet<>();
         recipeRepository.findAll().iterator().forEachRemaining(recipeSet::add);
