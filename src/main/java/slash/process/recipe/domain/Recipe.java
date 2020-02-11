@@ -8,8 +8,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
 @Setter
+@Getter
 @Entity
 public class Recipe {
 
@@ -24,7 +24,7 @@ public class Recipe {
     private String source;
     private String url;
     @Lob
-    private String direction;
+    private String directions;
 
     @Lob
     private Byte[] image;
@@ -32,7 +32,7 @@ public class Recipe {
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "recipe", fetch = FetchType.LAZY)
     private Set<Ingredient> ingredients = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)

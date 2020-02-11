@@ -1,21 +1,54 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Optional theme -->
+
+<script src="webjars/jquery/3.4.1/src/jquery.js"></script>
+<link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css" rel="stylesheet">
+<!-- Latest compiled and minified JavaScript -->
+<link rel="stylesheet" src="webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"/>
 <head>
     <meta charset="UTF-8">
     <title>My recipes</title>
 </head>
 <body>
-<h1>My Recipes !!</h1>
 
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Description</th>
-    </tr>
-    <tr th:each="recipe : ${recipes}">
-        <td th:text="${recipe.id}"></td>
-        <td th:text="${recipe.description}"></td>
-    </tr>
-</table>
+<div class="container-fluid" style="margin-top: 20px">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">My Recipes !!</h1>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" th:if="${not #lists.isEmpty(recipes) }">
+                            <thead class="thead-inverse">
+                            <tr>
+                                <th>Id</th>
+                                <th>Description</th>
+                                <td>View</td>
+                                <td>Update</td>
+                                <td>Delete</td>
+                                <td>Ingredients</td>
+                            </tr>
+                            </thead>
+                            <tr th:each="recipe : ${recipes} ">
+                                <td th:text="${recipe.id}"></td>
+                                <td th:text="${recipe.description}"></td>
+                                <td><a href="#" th:href="@{'/recipe/'+ ${recipe.id}+'/show'}">View</a></td>
+                                <td><a href="#" th:href="@{'/recipe/'+ ${recipe.id}+'/update'}">Update</a></td>
+                                <td><a href="#" th:href="@{'/recipe/'+ ${recipe.id}+'/delete'}">Delete</a></td>
+                                <td><a href="#" th:href=" @{'/recipe/'+ ${recipe.id}+'/ingredients'}">list of
+                                    ingredients</a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

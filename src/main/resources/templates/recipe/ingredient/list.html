@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="webjars/jquery/3.4.1/src/jquery.js"></script>
+<link href="webjars/bootstrap/3.3.7-1/css/bootstrap.min.css" rel="stylesheet">
+<!-- Latest compiled and minified JavaScript -->
+<link rel="stylesheet" src="webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"/>
+<link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" rel="stylesheet"
+      th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+
+<script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script crossorigin="anonymous"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<!--/*@thymesVar id="recipe" type="slash.process.recipe.domain.Recipe" */-->
+<!--/*@thymesVar id="ingredients" type="java.util.Set<slash.process.recipe.commands.IngredientCommand>"*/-->
+<div class="container-fluid" style="margin-top: 20px">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h1 class="panel-title">My Recipes !!</h1>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" th:if="${not #lists.isEmpty(recipe.ingredients) }">
+                            <thead class="thead-inverse">
+                            <tr>
+
+                                <th>Description</th>
+                                <td>View</td>
+                                <td>Update</td>
+                                <td>Delete</td>
+                            </tr>
+                            </thead>
+
+                            <tr th:each="ingredient : ${recipe.ingredients} ">
+
+                                <td th:text="${ingredient.getAmount().toString()}+' '+${ingredient.getUom().description}+' of '+${ingredient.getDescription()}"></td>
+                                <td><a href="#"
+                                       th:href="@{'/recipe/'+ ${recipe.id}+'/ingredient/'+${ingredient.id}+'/show'}">View</a>
+                                </td>
+                                <td><a href="#"
+                                       th:href="@{'/recipe/'+ ${recipe.id}+'/ingredient/'+${ingredient.id}+'/update'}">View</a>
+                                </td>
+                                <td><a href="#"
+                                       th:href="@{'/recipe/'+ ${recipe.id}+'/ingredient/'+${ingredient.id}+'/delete'}">View</a>
+                                </td>
+
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
