@@ -1,11 +1,14 @@
 package slash.process.recipe.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import slash.process.recipe.commands.RecipeCommand;
 import slash.process.recipe.domain.Recipe;
+import slash.process.recipe.exceptions.NotFoundException;
 import slash.process.recipe.services.RecipeService;
 
 @Slf4j
@@ -22,7 +25,7 @@ public class RecipeController {
     public String showById(@PathVariable String id, Model model) {
 
         Recipe recipe = new Recipe();
-        recipe = recipeService.findById(new Long(id));
+        recipe = recipeService.findById(Long.valueOf(id));
 
         model.addAttribute("recipe", recipeService.findById(new Long(id)));
         recipe.getIngredients().forEach(ingredient -> {
@@ -59,5 +62,37 @@ public class RecipeController {
         log.debug("deleting by id :" + id);
         recipeService.deleteById(new Long(id));
         return "redirect:/";
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView handleNotFound(Exception exception) {
+
+        log.error("Handling not found exception");
+        log.error(exception.getMessage());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("exception", exception);
+        exception.getMessage();
+
+        modelAndView.setViewName("404error");
+
+        return modelAndView;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ModelAndView handNumberFormat(Exception exception) {
+
+        log.error("Handling Bad Request exception");
+        log.error(exception.getMessage());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("exception", exception);
+        exception.getMessage();
+
+        modelAndView.setViewName("400error");
+
+        return modelAndView;
     }
 }

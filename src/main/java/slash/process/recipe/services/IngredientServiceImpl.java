@@ -19,14 +19,17 @@ public class IngredientServiceImpl implements IngredientService {
     RecipeRepository recipeRepository;
     IngredientCommandToIngredient ingredientCommandToIngredient;
     UnitOfMeasureRepository unitOfMeasureRepository;
+    RecipeService recipeService;
 
 
-    public IngredientServiceImpl(IngredientToIngredientCommand ingredientToIngredientCommand, RecipeRepository recipeRepository, IngredientCommandToIngredient ingredientCommandToIngredient, UnitOfMeasureRepository unitOfMeasureRepository) {
+    public IngredientServiceImpl(IngredientToIngredientCommand ingredientToIngredientCommand, RecipeRepository recipeRepository, IngredientCommandToIngredient ingredientCommandToIngredient, UnitOfMeasureRepository unitOfMeasureRepository, RecipeService recipeService) {
         this.ingredientToIngredientCommand = ingredientToIngredientCommand;
         this.recipeRepository = recipeRepository;
         this.ingredientCommandToIngredient = ingredientCommandToIngredient;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
+        this.recipeService = recipeService;
     }
+
 
     @Override
     public IngredientCommand findByRecipeAndIngredientId(Long recipeId, Long ingredientId) {
@@ -61,19 +64,49 @@ public class IngredientServiceImpl implements IngredientService {
                 UnitOfMeasure unitOfMeasure = unitOfMeasures.get();
                 ingredientFound.setUom(unitOfMeasure);
             } else {
-                recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+                Ingredient ingredient = ingredientCommandToIngredient.convert(command);
+                ingredient.setRecipe(recipe);
+                recipe.addIngredient(ingredient);
 
             }
             Recipe saveRecipe = recipeRepository.save(recipe);
-            return ingredientToIngredientCommand.convert(saveRecipe.getIngredients().stream()
+            Optional<Ingredient> savedIngredientOptional = saveRecipe.getIngredients().stream()
                     .filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId()))
-                    .findFirst()
-                    .get());
+                    .findFirst();
+
+            //check by description
+            if (!savedIngredientOptional.isPresent()) {
+                //not totally safe... But best guess
+                savedIngredientOptional = saveRecipe.getIngredients().stream()
+                        .filter(recipeIngredients -> recipeIngredients.getDescription().equals(command.getDescription()))
+                        .filter(recipeIngredients -> recipeIngredients.getAmount().equals(command.getAmount()))
+                        .filter(recipeIngredients -> recipeIngredients.getUom().getId().equals(command.getUom().getId()))
+                        .findFirst();
+            }
+
+            //to do check for fail
+            return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
         }
     }
 
+
     @Override
-    public void deleteIngredient(Long recipeId, Long IngredientId) {
+    public void deleteIngredient(Long recipeId, Long ingredientId) {
+        Optional<Recipe> recipeOpt = recipeRepository.findById(recipeId);
+        Recipe recipe = recipeOpt.get();
+
+//        recipeOpt2.getIngredients().forEach(ingredient -> recipeOpt2.getIngredients().remove(ingredient.getId().equals(ingredientId)));
+        Optional<Ingredient> ingredientOptional = recipe
+                .getIngredients()
+                .stream()
+                .filter(ingredient -> ingredient.getId().equals(ingredientId))
+                .findFirst();
+        ingredientOptional.get().setRecipe(null);
+        recipe.getIngredients().remove(ingredientOptional.get());
+        recipeRepository.save(recipe);
+
+
+
 
     }
 }

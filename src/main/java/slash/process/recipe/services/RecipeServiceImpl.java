@@ -7,6 +7,7 @@ import slash.process.recipe.commands.RecipeCommand;
 import slash.process.recipe.converters.RecipeCommandToRecipe;
 import slash.process.recipe.converters.RecipeToRecipeCommand;
 import slash.process.recipe.domain.Recipe;
+import slash.process.recipe.exceptions.NotFoundException;
 import slash.process.recipe.repositories.RecipeRepository;
 
 import java.util.HashSet;
@@ -42,7 +43,7 @@ public class RecipeServiceImpl implements RecipeService {
         Optional<Recipe> recipeOptional = recipeRepository.findById(l);
 
         if (!recipeOptional.isPresent()) {
-            throw new RuntimeException("Recipe Not Found!");
+            throw new NotFoundException("Recipe Not Found! for id value =" + l.toString());
         }
 
         return recipeOptional.get();
@@ -68,4 +69,6 @@ public class RecipeServiceImpl implements RecipeService {
     public void deleteById(Long id) {
         recipeRepository.deleteById(id);
     }
+
+
 }
